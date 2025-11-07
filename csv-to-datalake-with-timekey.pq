@@ -1,10 +1,12 @@
 let
+    CSVConvertToTable = (workspaceId,lakehouseId) =>
+let
   // CSVの定義
   readCsvfiles = (x) => let
     result = Table.TransformColumnTypes(Table.PromoteHeaders(Csv.Document(x, [Delimiter = ",", Columns = 13, Encoding = 65001, QuoteStyle = QuoteStyle.None]),[PromoteAllScalars = true]),  {{"受注コード", Int64.Type}, {"得意先コード", Int64.Type}, {"社員コード", Int64.Type}, {"出荷先名", type text}, {"出荷先郵便番号", Int64.Type}, {"出荷先都道府県", type text}, {"出荷先住所1", type text}, {"出荷先住所2", type text}, {"運送区分", Int64.Type}, {"受注日", type datetime}, {"締切日", type datetime}, {"出荷日", type datetime}, {"運送料", Int64.Type}}, "ja")
   in
     result,
-  Source = Lakehouse.Contents(null){[workspaceId = "5d862652-e3fd-42af-ab01-30473564619b"]}[Data]{[lakehouseId = "c80184c1-0905-4e58-9e0b-3e7fa86f516f"]}[Data],
+  Source = Lakehouse.Contents(null){[workspaceId = workspaceId]}[Data]{[lakehouseId = lakehouseId]}[Data],
   filter = Source{[Id = "Files", ItemKind = "Folder"]}[Data],
   csvFilter = filter{[Name = "csv"]}[Content],
   onlyOrderDetails = csvFilter{[Name = "受注"]}[Content],
@@ -12,3 +14,5 @@ let
   TimeKey = Table.TransformColumnTypes(Table.AddColumn(tableCombine, "TimeKey", each Int64.From(DateTime.ToText([受注日], [Format="yyyyMMdd"]))),{"TimeKey", Int64.Type})
 in
   TimeKey
+in 
+  CSVConvertToTable

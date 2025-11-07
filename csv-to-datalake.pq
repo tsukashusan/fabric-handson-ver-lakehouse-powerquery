@@ -12,5 +12,6 @@ let
   onlyOrderDetails = csvFilter{[Name = "受注"]}[Content],
   tableCombine = Table.Combine(List.Transform(onlyOrderDetails[Content], readCsvfiles))
 in
-  TimeKey
-in CSVConvertToTable
+  tableCombine
+in 
+  CSVConvertToTable
