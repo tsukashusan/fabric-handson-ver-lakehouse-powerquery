@@ -4,7 +4,7 @@
 前年の販売額 = 
 		CALCULATE(
 			SUM('juchumeisai'[売上]),
-			SAMEPERIODLASTYEAR('datetable'[Date])
+			PARALLELPERIOD('datetable'[Date], -1, YEAR)
 		)
 
 
